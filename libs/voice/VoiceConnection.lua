@@ -212,7 +212,7 @@ function VoiceConnection:_play(stream, duration)
 
 	duration = tonumber(duration) or math.huge
 
-	local elapsed = 0
+	local self._playElapsed = 0
 	local udp, ip, port = self._udp, self._ip, self._port
 	local ssrc, key = self._ssrc, self._key
 	local encoder = self._encoder
@@ -223,7 +223,7 @@ function VoiceConnection:_play(stream, duration)
 	local start = hrtime()
 	local reason
 
-	while elapsed < duration do
+	while self._playElapsed < duration do
 
 		local pcm = stream:read(pcm_len)
 		if not pcm then
@@ -255,8 +255,8 @@ function VoiceConnection:_play(stream, duration)
 		local packet = header .. ffi_string(encrypted, encrypted_len)
 		udp:send(packet, ip, port)
 
-		elapsed = elapsed + FRAME_DURATION
-		local delay = elapsed - (hrtime() - start) * MS_PER_NS
+		self._playElapsed = self._playElapsed + FRAME_DURATION
+		local delay = self._playElapsed - (hrtime() - start) * MS_PER_NS
 		sleep(max(delay, 0))
 
 		if self._paused then
@@ -283,7 +283,7 @@ function VoiceConnection:_play(stream, duration)
 		self._stopped = nil
 	end
 
-	return elapsed, reason
+	return self._playElapsed, reason
 
 end
 
