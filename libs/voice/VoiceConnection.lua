@@ -212,7 +212,7 @@ function VoiceConnection:_play(stream, duration)
 
 	duration = tonumber(duration) or math.huge
 
-	local self._playElapsed = 0
+	self._playElapsed = 0
 	local udp, ip, port = self._udp, self._ip, self._port
 	local ssrc, key = self._ssrc, self._key
 	local encoder = self._encoder
